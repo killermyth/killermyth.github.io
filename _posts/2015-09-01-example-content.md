@@ -84,4 +84,5 @@ public class Fragmenta extends Fragment {
 }
 {% endhighlight %}
 这样实现其实最精妙的部分就是将view的加载与数据的加载分开来了，这样view的加载还是使用了预加载机制，这样滑动还是非常顺畅，同时数据的加载变成了懒加载，只有在对用户可见的情况下才去加载数据。
+
 > 举一反三，其实所有不想被预加载的操作都可以放到loadData中，这样问题就解决了。
