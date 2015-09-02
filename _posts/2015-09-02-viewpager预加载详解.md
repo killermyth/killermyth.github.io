@@ -44,9 +44,11 @@ public void setOffscreenPageLimit(int limit) {
 > 以下解决方案适用于viewpager中各页面是fragment填充
 
 在fragment中存在一个方法（setUserVisibleHint）可以判断当前fragment是否对用户可见，我们只在可见情况下才加载数据。还有一点需要特别注意，在fragment第一次加载时，通过log可以看到fragment的生命周期如下
+{% highlight java %}
 setUserVisibleHint
 onCreateView
 onResume
+{% endhighlight %}
 我们可以看到setUserVisibleHint是在onCreateView之前，这样就导致了如果我们在setUserVisibleHint中去操作ui,如果这时view还没有被inflate，这样就会出现空指针问题。下面是综合以上问题的懒加载fragment的模板
 {% highlight java %}
 public class Fragmenta extends Fragment {
