@@ -4,7 +4,7 @@ title: About
 ---
 
 <p class="message">
-  微店Android高级开发工程师，欢迎各种技术非技术交流!
+  微店(杭州)Android高级开发工程师，欢迎各种技术非技术交流!
 </p>
 
 你可以通过以下方式联系我
