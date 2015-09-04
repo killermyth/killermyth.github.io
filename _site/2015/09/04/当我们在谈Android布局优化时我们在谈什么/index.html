@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      当我们在谈Android布局优化时 我们在谈什么 &middot; 填坑记
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body class="theme-base-08">
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>填过的坑越多，路就会越平坦.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="/archive/v1.0.0.zip">Download</a>
+    <a class="sidebar-nav-item" href="">GitHub project</a>
+    <span class="sidebar-nav-item">Currently v1.0.0</span>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2015. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">填坑记</a>
+            <small>By 吕英斌</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">当我们在谈Android布局优化时 我们在谈什么</h1>
+  <span class="post-date">04 Sep 2015</span>
+  <div class="message">
+Android开发中布局技术是区别于其他开发技术的重要方面，掌握布局技术很容易但是想做好还是要费一些周折。本人也有幸面试过一些Android同学，在交流的过程中也发现很多同学并没有意识到布局优化的重要性。本文就是来对相应的布局优化技术做一下总结。
+</div>
+
+<h3 id="include-">1. include 布局重用</h3>
+<p>开发中我们肯定会经常遇到一套布局在多个页面中都使用的情况，比如各页面顶部的actionbar，如果我们不了解重用技术我们就需要在每个页面的布局文件中写同样的代码，一遍又一遍。。
+那么如何进行布局重用呢？我们需要把重用的部分拿出来放到一个单独的layout中，如myactionbar.xml</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="o">&lt;</span><span class="n">RelativeLayout</span> <span class="nl">xmlns:</span><span class="n">android</span><span class="o">=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span>
+    <span class="nl">android:</span><span class="n">layout_width</span><span class="o">=</span><span class="err">”</span><span class="n">match_parent</span><span class="err">”</span>
+    <span class="nl">android:</span><span class="n">layout_height</span><span class="o">=</span><span class="s">&quot;wrap_content&quot;</span>
+    <span class="nl">android:</span><span class="n">layout_marginBottom</span><span class="o">=</span><span class="s">&quot;10dp&quot;</span>
+    <span class="nl">android:</span><span class="n">background</span><span class="o">=</span><span class="s">&quot;@color/titlebar_bg&quot;</span><span class="o">&gt;</span>
+
+    <span class="o">&lt;</span><span class="n">ImageView</span> <span class="nl">android:</span><span class="n">layout_width</span><span class="o">=</span><span class="s">&quot;wrap_content&quot;</span>
+               <span class="nl">android:</span><span class="n">layout_height</span><span class="o">=</span><span class="s">&quot;wrap_content&quot;</span> 
+               <span class="nl">android:</span><span class="n">src</span><span class="o">=</span><span class="s">&quot;@drawable/logo&quot;</span> <span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">FrameLayout</span><span class="o">&gt;</span></code></pre></div>
+
+<p>下面在每个需要的地方直接include就可以</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="o">&lt;</span><span class="n">include</span> <span class="n">layout</span><span class="o">=</span><span class="s">&quot;@layout/myactionbar&quot;</span><span class="o">/&gt;</span></code></pre></div>
+
+<p>如果因为需要，各个界面中的layout_marginBottom不同时该怎么办</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="o">&lt;</span><span class="n">include</span> <span class="n">layout</span><span class="o">=</span><span class="s">&quot;@layout/myactionbar&quot;</span>
+    <span class="nl">android:</span><span class="n">layout_width</span><span class="o">=</span><span class="s">&quot;match_parent&quot;</span>
+    <span class="nl">android:</span><span class="n">layout_height</span><span class="o">=</span><span class="s">&quot;wrap_content&quot;</span>
+    <span class="nl">android:</span><span class="n">layout_marginBottom</span><span class="o">=</span><span class="s">&quot;5dp&quot;</span><span class="o">/&gt;</span></code></pre></div>
+
+<p>通过上面的引入方法，我们就可以把layout_marginBottom属性覆盖掉。</p>
+
+<blockquote>
+  <p><strong>注意：</strong>如果没有layout_width、layout_height属性，layout_marginBottom是无法被成功覆盖的。其实我们可以通过这种方式覆盖各种layout属性。其实我们可以通过使用BaseActivity或BaseFragment来达到同样的目的,但不在本文讨论的范围。</p>
+</blockquote>
+
+<h3 id="merge-">2. merge 减少布局层次</h3>
+<p>merge是与include配合使用的，在include时，我们会把被重用的部分单独放到一个layout中，一般我们认为一个单独的layout一定需要有一个viewgroup来存放我们的各个元素，这样这个viewgroup就会将布局深度+1，如果我们确实不需要viewgroup的情况下，我们又不想让布局层次太深该怎么办？</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="o">&lt;</span><span class="n">merge</span> <span class="nl">xmlns:</span><span class="n">android</span><span class="o">=</span><span class="s">&quot;http://schemas.android.com/apk/res/android&quot;</span><span class="o">&gt;</span>
+
+    <span class="o">&lt;</span><span class="n">ImageView</span> <span class="nl">android:</span><span class="n">layout_width</span><span class="o">=</span><span class="s">&quot;wrap_content&quot;</span>
+               <span class="nl">android:</span><span class="n">layout_height</span><span class="o">=</span><span class="s">&quot;wrap_content&quot;</span> 
+               <span class="nl">android:</span><span class="n">src</span><span class="o">=</span><span class="s">&quot;@drawable/logo&quot;</span> <span class="o">/&gt;</span>
+<span class="o">&lt;/</span><span class="n">merge</span><span class="o">&gt;</span></code></pre></div>
+
+<blockquote>
+  <p>**注意：布局层次过深不仅会导致渲染时的缓慢，有时还会出现一些比较怪异的问题，在之后的工具篇会有更多的分析</p>
+</blockquote>
+
+<h3 id="viewstub-">3. viewstub 在布局需要时将其显示出来</h3>
+
+<p>有时我们会在布局中放入一些很少会用到的布局比如进度条、特殊情况下显示的内容等。一般我们可能会用控制view的visibility来达到目的，但是我们可以用更好的viewstub。为什么会更好呢？依据官方的说明，viewstub是更轻量的view，可以被用来延迟加载布局，其特性是大小为0而且不可见，对于整体布局，只有当viewstub的setVisibility(int) 或者 inflate() 被调用时，它才是存在的。那么如何使用呢？</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="o">&lt;</span><span class="n">ViewStub</span>
+    <span class="nl">android:</span><span class="n">id</span><span class="o">=</span><span class="s">&quot;@+id/stub_import&quot;</span>
+    <span class="nl">android:</span><span class="n">inflatedId</span><span class="o">=</span><span class="s">&quot;@+id/panel_import&quot;</span>
+    <span class="nl">android:</span><span class="n">layout</span><span class="o">=</span><span class="s">&quot;@layout/progress_overlay&quot;</span>
+    <span class="nl">android:</span><span class="n">layout_width</span><span class="o">=</span><span class="s">&quot;fill_parent&quot;</span>
+    <span class="nl">android:</span><span class="n">layout_height</span><span class="o">=</span><span class="s">&quot;wrap_content&quot;</span>
+    <span class="nl">android:</span><span class="n">layout_gravity</span><span class="o">=</span><span class="s">&quot;bottom&quot;</span> <span class="o">/&gt;</span></code></pre></div>
+
+<p>通过以下调用让viewstub可见</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="o">((</span><span class="n">ViewStub</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">stub_import</span><span class="o">)).</span><span class="na">setVisibility</span><span class="o">(</span><span class="n">View</span><span class="o">.</span><span class="na">VISIBLE</span><span class="o">);</span>
+<span class="c1">// 或者</span>
+<span class="n">View</span> <span class="n">importPanel</span> <span class="o">=</span> <span class="o">((</span><span class="n">ViewStub</span><span class="o">)</span> <span class="n">findViewById</span><span class="o">(</span><span class="n">R</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">stub_import</span><span class="o">)).</span><span class="na">inflate</span><span class="o">();</span></code></pre></div>
+
+<blockquote>
+  <p>其实对于Android来说，布局优化主要讲得就是include merge以及viewstub，当然还包括控制布局深度等工具的使用，这个在之后的文章中再做总结。</p>
+</blockquote>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/09/02/viewpager%E9%A2%84%E5%8A%A0%E8%BD%BD%E8%AF%A6%E8%A7%A3/">
+            Android ViewPager预加载机制详解
+            <small>02 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+  </body>
+</html>
