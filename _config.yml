@@ -5,9 +5,9 @@ permalink:           pretty
 relative_permalinks: true
 
 # Setup
-title:               Android World
-tagline:             'By 英斌'
-description:         '微店Android高级开发工程师，欢迎技术非技术交流.'
+title:               填坑记
+tagline:             'By 吕英斌'
+description:         '填过的坑越多，路就会越平坦.'
 url:                 http://killermyth.github.io
 baseurl:             ''
 paginate:            5
