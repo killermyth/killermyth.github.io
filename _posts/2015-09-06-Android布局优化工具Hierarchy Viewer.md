@@ -10,10 +10,11 @@ title: Android布局优化工具Hierarchy Viewer
 
 
 ### 1. 如何使用Hierarchy Viewer
-工具位于 **‘android-sdk/tools/’ 路径下，直接双击hierarchyviewer打开即可。打开后会看到从设备到各个view的一个树形图，选中其中一个需要被分析的view点击Load View Hierarchy按钮就会进入我们分析时会用到的主界面。在打开工具之前需要确保被分析的view在当前设备中是可见的。
-> **注意：此处有可能出现界面中只有设备没有具体view的情况，首先要确保被分析的view在当前设备中是可见的，如果是可见的还无法在工具中找到，那就有可能是由android安全控制的原因造成，官方原话为“To preserve security, Hierarchy Viewer can only connect to devices running a developer version of the Android system.”大意为因为安全原因，Hierarchy Viewer只能连接运行android开发版本的设备。具体如何解决见[ViewServer](https://github.com/romainguy/ViewServer)
+工具位于 **android-sdk/tools/**路径下，直接双击hierarchyviewer打开即可。打开后会看到从设备到各个view的一个树形图，选中其中一个需要被分析的view点击Load View Hierarchy按钮就会进入我们分析时会用到的主界面。在打开工具之前需要确保被分析的view在当前设备中是可见的。
 
-整个界面主要由**Tree View、**Tree Overview、**Properties View、**Layout View四部分组成，在左侧的Tree View中我们可以看到由整个view形成的一颗树，通过这颗树我们可以很容易的得到整个布局的层深。从tree view中我们可以看到一些特殊的地方比如
+> **注意**：此处有可能出现界面中只有设备没有具体view的情况，首先要确保被分析的view在当前设备中是可见的，如果是可见的还无法在工具中找到，那就有可能是由android安全控制的原因造成，官方原话为“To preserve security, Hierarchy Viewer can only connect to devices running a developer version of the Android system.”大意为因为安全原因，Hierarchy Viewer只能连接运行android开发版本的设备。具体如何解决见[ViewServer](https://github.com/romainguy/ViewServer)
+
+主界面主要由**Tree View**、**Tree Overview**、**Properties View**、**Layout View**四部分组成，在左侧的Tree View中我们可以看到由整个view形成的一颗树，通过这颗树我们可以很容易的得到整个布局的层深。从tree view中我们可以看到一些特殊的地方比如
 我们的整个布局是从一个PhoneWindow@DecorView的根view开始的，根view后面又是一个FrameLayout，再下一层才是我们在布局文件中添加的viewgroup，具体为什么就不再展开了。
 点击这颗树中得某个元素会显示出一些更详细的信息如下：
 {% highlight java %}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <title>
+    
+      Android布局优化工具Hierarchy Viewer &middot; 填坑记
+    
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/public/css/poole.css">
+  <link rel="stylesheet" href="/public/css/syntax.css">
+  <link rel="stylesheet" href="/public/css/lanyon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+
+  <!-- Icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/public/apple-touch-icon-precomposed.png">
+  <link rel="shortcut icon" href="/public/favicon.ico">
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+</head>
+
+
+  <body class="theme-base-08">
+
+    <!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+     styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <p>填过的坑越多，路就会越平坦.</p>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a class="sidebar-nav-item" href="/">Home</a>
+
+    
+
+    
+    
+      
+        
+      
+    
+      
+        
+      
+    
+      
+        
+          <a class="sidebar-nav-item" href="/about/">About</a>
+        
+      
+    
+      
+    
+
+    <a class="sidebar-nav-item" href="/archive/v1.0.0.zip">Download</a>
+    <a class="sidebar-nav-item" href="">GitHub project</a>
+    <span class="sidebar-nav-item">Currently v1.0.0</span>
+  </nav>
+
+  <div class="sidebar-item">
+    <p>
+      &copy; 2015. All rights reserved.
+    </p>
+  </div>
+</div>
+
+
+    <!-- Wrap is the content to shift when toggling the sidebar. We wrap the
+         content to avoid any CSS collisions with our real content. -->
+    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="/" title="Home">填坑记</a>
+            <small>By 吕英斌</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+        <div class="post">
+  <h1 class="post-title">Android布局优化工具Hierarchy Viewer</h1>
+  <span class="post-date">06 Sep 2015</span>
+  <div class="message">
+在android开发中我们会经常遇到布局渲染慢的问题（本文中得‘慢’单针对布局不合理造成的渲染缓慢，不涉及由于UI线程中有不合理操作造成的卡顿），出现这样的问题我们一般首先需要去定位问题出现在哪里，本文主要介绍定位这样的问题时我们会用到的工具Hierarchy Viewer。
+</div>
+
+<h3 id="hierarchy-viewer">1. 如何使用Hierarchy Viewer</h3>
+<p>工具位于 <strong>android-sdk/tools/</strong>路径下，直接双击hierarchyviewer打开即可。打开后会看到从设备到各个view的一个树形图，选中其中一个需要被分析的view点击Load View Hierarchy按钮就会进入我们分析时会用到的主界面。在打开工具之前需要确保被分析的view在当前设备中是可见的。</p>
+
+<blockquote>
+  <p><strong>注意</strong>：此处有可能出现界面中只有设备没有具体view的情况，首先要确保被分析的view在当前设备中是可见的，如果是可见的还无法在工具中找到，那就有可能是由android安全控制的原因造成，官方原话为“To preserve security, Hierarchy Viewer can only connect to devices running a developer version of the Android system.”大意为因为安全原因，Hierarchy Viewer只能连接运行android开发版本的设备。具体如何解决见<a href="https://github.com/romainguy/ViewServer">ViewServer</a></p>
+</blockquote>
+
+<p>主界面主要由<strong>Tree View</strong>、<strong>Tree Overview</strong>、<strong>Properties View</strong>、<strong>Layout View</strong>四部分组成，在左侧的Tree View中我们可以看到由整个view形成的一颗树，通过这颗树我们可以很容易的得到整个布局的层深。从tree view中我们可以看到一些特殊的地方比如
+我们的整个布局是从一个PhoneWindow@DecorView的根view开始的，根view后面又是一个FrameLayout，再下一层才是我们在布局文件中添加的viewgroup，具体为什么就不再展开了。
+点击这颗树中得某个元素会显示出一些更详细的信息如下：</p>
+
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="mi">15</span> <span class="n">views</span>
+<span class="nl">Measure:</span><span class="mi">1</span><span class="n">ms</span>
+<span class="nl">Layout:</span><span class="mi">1</span><span class="n">ms</span>
+<span class="nl">Draw:</span><span class="mi">1</span><span class="n">ms</span></code></pre></div>
+
+<p>从中我们可以清楚的看到每个元素渲染所需要的具体时间，通过分析，我们就可以定位到哪些元素比较慢从而进行优化</p>
+
+<h3 id="section">2. 实际遇到过的布局导致的问题</h3>
+<blockquote>
+  <ul>
+    <li>层次过深造成的java.lang.StackOverflowError</li>
+  </ul>
+</blockquote>
+
+<p>曾在一个项目中遇到这样的问题，在布局层次比较深的情况下（&gt;10）部分低配机型会报这样的错误，之后优化布局深度（&lt;10）后问题被解决
+谷歌官方建议布局深度不要超过10，所以我们在布局时尽量要控制布局深度。</p>
+
+<blockquote>
+  <p>关于布局优化其实应该是形成一个比较好的编码习惯，尽量在前期去规避问题的发生，而不要等问题发生再去解决，这样还是太被动。</p>
+</blockquote>
+
+</div>
+
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/09/04/%E5%BD%93%E6%88%91%E4%BB%AC%E5%9C%A8%E8%B0%88Android%E5%B8%83%E5%B1%80%E4%BC%98%E5%8C%96%E6%97%B6%E6%88%91%E4%BB%AC%E5%9C%A8%E8%B0%88%E4%BB%80%E4%B9%88/">
+            当我们在谈Android布局优化时 我们在谈什么
+            <small>04 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/09/02/viewpager%E9%A2%84%E5%8A%A0%E8%BD%BD%E8%AF%A6%E8%A7%A3/">
+            Android ViewPager预加载机制详解
+            <small>02 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</div>
+
+      </div>
+    </div>
+
+    <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+    <script>
+      (function(document) {
+        var toggle = document.querySelector('.sidebar-toggle');
+        var sidebar = document.querySelector('#sidebar');
+        var checkbox = document.querySelector('#sidebar-checkbox');
+
+        document.addEventListener('click', function(e) {
+          var target = e.target;
+
+          if(!checkbox.checked ||
+             sidebar.contains(target) ||
+             (target === checkbox || target === toggle)) return;
+
+          checkbox.checked = false;
+        }, false);
+      })(document);
+    </script>
+  </body>
+</html>
