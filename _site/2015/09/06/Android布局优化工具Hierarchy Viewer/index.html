@@ -108,7 +108,7 @@
 
 <p>主界面主要由<strong>Tree View</strong>、<strong>Tree Overview</strong>、<strong>Properties View</strong>、<strong>Layout View</strong>四部分组成，在左侧的Tree View中我们可以看到由整个view形成的一颗树，通过这颗树我们可以很容易的得到整个布局的层深。从tree view中我们可以看到一些特殊的地方比如
 我们的整个布局是从一个PhoneWindow@DecorView的根view开始的，根view后面又是一个FrameLayout，再下一层才是我们在布局文件中添加的viewgroup，具体为什么就不再展开了。
-点击这颗树中得某个元素会显示出一些更详细的信息如下：</p>
+点击这颗树中得某个元素在点击上方的<strong>Profile Node</strong>按钮会显示出一些更详细的信息如下：</p>
 
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="mi">15</span> <span class="n">views</span>
 <span class="nl">Measure:</span><span class="mi">1</span><span class="n">ms</span>
@@ -117,15 +117,15 @@
 
 <p>从中我们可以清楚的看到每个元素渲染所需要的具体时间，通过分析，我们就可以定位到哪些元素比较慢从而进行优化</p>
 
-<h3 id="section">2. 实际遇到过的布局导致的问题</h3>
+<h3 id="section">2. 实际遇到过的布局不合理导致的问题</h3>
 <blockquote>
   <ul>
     <li>层次过深造成的java.lang.StackOverflowError</li>
   </ul>
 </blockquote>
 
-<p>曾在一个项目中遇到这样的问题，在布局层次比较深的情况下（&gt;10）部分低配机型会报这样的错误，之后优化布局深度（&lt;10）后问题被解决
-谷歌官方建议布局深度不要超过10，所以我们在布局时尽量要控制布局深度。</p>
+<p>曾在一个项目中遇到这样的问题，在布局层次比较深的情况下（&gt;10）部分低配机型在渲染时会报StackOverflowError，之后优化布局深度（&lt;10）后问题被解决
+谷歌官方说明默认最大布局深度为10，所以我们在布局时尽量要控制布局深度。</p>
 
 <blockquote>
   <p>关于布局优化其实应该是形成一个比较好的编码习惯，尽量在前期去规避问题的发生，而不要等问题发生再去解决，这样还是太被动。</p>

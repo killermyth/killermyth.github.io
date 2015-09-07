@@ -4,7 +4,7 @@
  <title>填坑记</title>
  <link href="http://killermyth.github.io/atom.xml" rel="self"/>
  <link href="http://killermyth.github.io/"/>
- <updated>2015-09-06T18:41:07+08:00</updated>
+ <updated>2015-09-07T09:50:03+08:00</updated>
  <id>http://killermyth.github.io</id>
  <author>
    <name>吕英斌</name>
@@ -30,7 +30,7 @@
 
 &lt;p&gt;主界面主要由&lt;strong&gt;Tree View&lt;/strong&gt;、&lt;strong&gt;Tree Overview&lt;/strong&gt;、&lt;strong&gt;Properties View&lt;/strong&gt;、&lt;strong&gt;Layout View&lt;/strong&gt;四部分组成，在左侧的Tree View中我们可以看到由整个view形成的一颗树，通过这颗树我们可以很容易的得到整个布局的层深。从tree view中我们可以看到一些特殊的地方比如
 我们的整个布局是从一个PhoneWindow@DecorView的根view开始的，根view后面又是一个FrameLayout，再下一层才是我们在布局文件中添加的viewgroup，具体为什么就不再展开了。
-点击这颗树中得某个元素会显示出一些更详细的信息如下：&lt;/p&gt;
+点击这颗树中得某个元素在点击上方的&lt;strong&gt;Profile Node&lt;/strong&gt;按钮会显示出一些更详细的信息如下：&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;views&lt;/span&gt;
 &lt;span class=&quot;nl&quot;&gt;Measure:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ms&lt;/span&gt;
@@ -39,15 +39,15 @@
 
 &lt;p&gt;从中我们可以清楚的看到每个元素渲染所需要的具体时间，通过分析，我们就可以定位到哪些元素比较慢从而进行优化&lt;/p&gt;
 
-&lt;h3 id=&quot;section&quot;&gt;2. 实际遇到过的布局导致的问题&lt;/h3&gt;
+&lt;h3 id=&quot;section&quot;&gt;2. 实际遇到过的布局不合理导致的问题&lt;/h3&gt;
 &lt;blockquote&gt;
   &lt;ul&gt;
     &lt;li&gt;层次过深造成的java.lang.StackOverflowError&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;曾在一个项目中遇到这样的问题，在布局层次比较深的情况下（&amp;gt;10）部分低配机型会报这样的错误，之后优化布局深度（&amp;lt;10）后问题被解决
-谷歌官方建议布局深度不要超过10，所以我们在布局时尽量要控制布局深度。&lt;/p&gt;
+&lt;p&gt;曾在一个项目中遇到这样的问题，在布局层次比较深的情况下（&amp;gt;10）部分低配机型在渲染时会报StackOverflowError，之后优化布局深度（&amp;lt;10）后问题被解决
+谷歌官方说明默认最大布局深度为10，所以我们在布局时尽量要控制布局深度。&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;关于布局优化其实应该是形成一个比较好的编码习惯，尽量在前期去规避问题的发生，而不要等问题发生再去解决，这样还是太被动。&lt;/p&gt;
