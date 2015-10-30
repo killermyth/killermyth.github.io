@@ -9,7 +9,7 @@ title: Android Listview postion相关总结
 </div>
 
 ### 1. onItemClick中使用position
-在存在headerview或者footerview的情况下，我们会发现onItemClick方法传入的position有下面的规律，如果只有headerview，点击position实际为0的item，传入的position为1；当headerview及footerview都有的情况，点击position实际为0的item，传入的position为2，到底是什么原因导致的，如下
+在存在headerview或者footerview的情况下，我们会发现onItemClick方法传入的position有下面的规律，如果只有headerview，点击position实际为0的item，传入的position为1；当headerview及footerview都有的情况，点击position实际为0的item，传入的position为2，到底是什么原因导致的，我们看下listview中得setAdapter方法
 {% highlight java %}
 @Override
 public void setAdapter(ListAdapter adapter) {
@@ -34,6 +34,7 @@ public void setAdapter(ListAdapter adapter) {
 ### 2. 如何正确的使用position
 > * 从adapter中获取item
 
+在onItemClick方法中使用传入的position时，我们通过parent.getAdapter()获取包装后的adapter，这样getitem就没有问题了
 {% highlight java %}
 @Override
 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
